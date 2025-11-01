@@ -1,0 +1,12 @@
+{
+  "generation_date": "2025-11-01T12:53:05.232464",
+  "table_counts": {
+    "vehicles": 200,
+    "drivers": 400,
+    "routes": 50,
+    "trips": 100000,
+    "deliveries": 400000,
+    "maintenance": 5000
+  },
+  "validations_passed": true
+}
