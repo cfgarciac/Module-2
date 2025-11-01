@@ -92,6 +92,13 @@ target/
 # Exclude trained models
 /models/
 
-# exclude data from source control by default
-/data/
-/data/*
+# Data folders
+/data/raw/
+/data/raw/*
+/data/temp/
+/data/temp/*
+# allow processed and other data folders
+!data/processed/
+!data/processed/**
+!data/outputs/
+!data/outputs/**
