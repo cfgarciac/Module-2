@@ -1,0 +1,48 @@
+                          ┌───────────────────────────────────────────────┐
+                          │         FleetLogix Mobile Application         │
+                          │      (Conductores enviando datos en vivo)     │
+                          └───────────────────────────────────────────────┘
+                                               │
+                                               ▼
+                          ┌───────────────────────────────────────────────┐
+                          │               API GATEWAY                     │
+                          │  • POST /delivery/update                      │
+                          │  • POST /delivery/completed                   │
+                          │  • POST /delivery/position                    │
+                          └───────────────────────────────────────────────┘
+                                               │
+                                               ▼
+                          ┌───────────────────────────────────────────────┐
+                          │              AWS LAMBDA LAYER                 │
+                          │ ───────────────────────────────────────────── │
+                          │  Lambda 1: validate_delivery()                │
+                          │  Lambda 2: calculate_eta()                    │
+                          │  Lambda 3: route_deviation_alert()            │
+                          └───────────────────────────────────────────────┘
+                      ┌──────────────┬───────────────────┬─────────────────────┐
+                      │              │                   │                      │
+                      ▼              ▼                   ▼                      ▼
+        ┌────────────────────┐  ┌─────────────────┐  ┌──────────────────┐  ┌─────────────────────┐
+        │   Amazon S3        │  │   DynamoDB      │  │   Amazon SNS      │  │ Amazon RDS          │
+        │  Data Lake (raw)   │  │ Estado actual   │  │ Alertas ETA/      │  │ PostgreSQL migrado  │
+        │  Año/Mes/Día/      │  │  de entrega     │  │ desviación ruta   │  │ (Producción)        │
+        └────────────────────┘  └─────────────────┘  └──────────────────┘  └─────────────────────┘
+                      │              ▲
+                      │              │
+                      │              │
+                      ▼              │
+        ┌────────────────────────────┐
+        │   Batch ETL (Airflow/EC2)  │  ← (Opcional)  
+        │   Procesamiento histórico  │
+        └────────────────────────────┘
+                      │
+                      ▼
+        ┌────────────────────────────────────────┐
+        │                Snowflake               │
+        │   Data Warehouse (Modelo Estrella)     │
+        │   • dim_driver                         │
+        │   • dim_vehicle                        │
+        │   • dim_customer                       │
+        │   • dim_route                          │
+        │   • fact_deliveries                    │
+        └────────────────────────────────────────┘
